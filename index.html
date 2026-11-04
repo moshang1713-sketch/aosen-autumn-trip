@@ -2,84 +2,82 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f4e9">
-  <meta name="description" content="奥森南园秋游指南。13:00 奥林匹克公园站 G 东北口集合，查看路线、行程和拍照建议。">
+  <meta name="description" content="奥森南园秋游指南。13:00 奥林匹克公园站 G 东北口集合，查看步行路线、实拍和行程。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="奥森南园 · 秋日光影">
-  <meta property="og:description" content="一份给队友的奥森秋游指南：集合、路线、行程和拍照建议。">
+  <meta property="og:description" content="一份给队友的奥森秋游地图，含集合、沿途实拍和拍照建议。">
   <link rel="icon" href="./assets/leaf.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./src/styles.css">
   <script src="./vendor/leaflet/leaflet.js" defer></script>
+  <script src="./src/places.js" defer></script>
+  <script src="./src/walks.js" defer></script>
+  <script src="./src/photos.js" defer></script>
   <script src="./src/trip.js" defer></script>
   <script src="./src/map.js" defer></script>
   <script src="./src/app.js" defer></script>
   <title>奥森南园 · 秋日光影</title>
 </head>
 <body>
-  <header class="masthead wrap">
-    <a class="brand" href="#top"><img src="./assets/leaf.svg" width="30" height="30" alt=""> 秋日光影</a>
-    <button class="plain" id="share" type="button">分享行程 <span aria-hidden="true">↗</span></button>
+  <header class="masthead">
+    <a class="brand" href="./"><img src="./assets/leaf.svg" width="36" height="36" alt=""><span><small>北京 · 秋日光影</small><strong>奥森南园秋游地图</strong></span></a>
+    <div class="top-actions"><button id="info" class="plain" type="button">出行说明</button><button id="share" class="button" type="button">分享 ↗</button></div>
   </header>
-  <main id="top" class="wrap">
-    <section class="hero" aria-labelledby="title">
-      <div class="hero-copy">
-        <p class="kicker">北京 / 奥林匹克森林公园南园</p>
-        <h1 id="title">奥森南园<br><em>秋日光影</em></h1>
-        <p>从中轴银杏走到奥海边，留一点时间等光。</p>
+  <main class="workspace">
+    <section class="map-stage" aria-label="奥森南园步行地图">
+      <div id="map" aria-label="地理地图，支持平移和缩放"></div>
+      <div class="map-top">
+        <div class="meeting"><p><strong id="meeting-time">13:00</strong> 集合 · <span id="trip-date">日期待定</span></p><h1>奥林匹克公园站 G 东北口</h1></div>
+        <div id="plans" class="plans" role="group" aria-label="行程方案"></div>
       </div>
-      <p class="hero-caption">原创景观插画 · 奥海秋意</p>
+      <div id="map-status" class="map-status" role="status">正在加载本地区域底图…</div>
+      <div class="map-tools" role="group" aria-label="地图快捷操作">
+        <button type="button" data-meeting>集合点</button><button type="button" id="next">下一站</button><button type="button" id="overview">全程</button>
+        <a id="map-amap" href="https://uri.amap.com/search?keyword=奥林匹克公园地铁站G东北口&amp;city=北京&amp;callnative=1" target="_blank" rel="noopener noreferrer">在高德打开 ↗</a>
+      </div>
+      <div class="map-foot"><span>橙线 · 步行算路参考</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></div>
     </section>
-    <section id="meeting" class="meeting" aria-labelledby="meeting-title">
-      <div class="meeting-time"><span>集合时间</span><strong id="meeting-time">13:00</strong></div>
-      <div><p id="trip-date" class="kicker">日期待定</p><h2 id="meeting-title">奥林匹克公园站 G 东北口</h2><p>返程建议搭乘森林公园南门站，两站请分开搜索。</p></div>
-      <a id="meeting-link" class="button primary" href="https://uri.amap.com/search?keyword=奥林匹克公园地铁站G东北口&amp;city=北京&amp;src=aosen-autumn-trip&amp;callnative=1" target="_blank" rel="noopener noreferrer">集合点导航 ↗</a>
-    </section>
-    <section id="route" class="section" aria-labelledby="route-title">
-      <div class="section-heading"><div><p class="kicker">01 / ROUTE</p><h2 id="route-title">秋游路线</h2></div><p>两套建议行程，待组织者确认</p></div>
-      <div id="plans" class="plans" role="group" aria-label="游览方案"></div>
-      <div class="route-grid">
-        <section id="map-panel" class="panel map-panel" aria-labelledby="map-title">
-          <div class="panel-heading"><h3 id="map-title">沿途地图</h3><button type="button" id="reset-map" class="plain" hidden>查看全程</button></div>
-          <p class="map-caption">景点顺序示意线，非步行导航。示意图不按比例绘制。</p>
-          <div id="map" aria-label="游览路线示意图，支持平移缩放"><p id="map-status" role="status">正在载入示意地图…</p></div>
-          <p class="map-legend"><span class="dot verified"></span>已核实 POI <span class="dot region"></span>区域或出口示意 <span class="dot unknown"></span>待核实点位仅在行程列出</p>
-          <div id="map-selection" class="map-selection" aria-live="polite">点击地图编号查看地点详情。</div>
-        </section>
-        <section id="schedule" class="panel schedule" aria-labelledby="schedule-title">
-          <div class="panel-heading"><h3 id="schedule-title">行程时间轴</h3></div>
-          <p class="map-caption" id="plan-note"></p>
-          <ol id="timeline" class="timeline"></ol>
+    <aside id="drawer" class="drawer" data-state="peek" aria-label="景点信息与行程">
+      <button id="drawer-handle" class="drawer-handle" type="button" aria-label="切换抽屉高度"><span></span></button>
+      <div class="drawer-summary">
+        <div><p class="kicker" id="selected-kicker">第 1 站</p><h2 id="selected-name">奥林匹克公园站 G 东北口</h2></div>
+        <a id="selected-nav" class="button primary" href="https://uri.amap.com/search?keyword=奥林匹克公园地铁站G东北口&amp;city=北京&amp;callnative=1" target="_blank" rel="noopener noreferrer">步行导航 ↗</a>
+      </div>
+      <div class="drawer-body">
+        <div id="detail"></div>
+        <section id="schedule" class="schedule" aria-labelledby="schedule-title">
+          <div class="section-heading"><div><p class="kicker">沿途安排</p><h3 id="schedule-title">行程时间轴</h3></div><span id="route-count"></span></div>
+          <p id="plan-note"></p><ol id="timeline"></ol>
         </section>
       </div>
-    </section>
-    <section id="photos" class="section" aria-labelledby="photos-title">
-      <div class="section-heading"><div><p class="kicker">02 / PHOTO NOTES</p><h2 id="photos-title">拍照指南</h2></div><p>打卡进度仅保存在当前浏览器</p></div>
-      <div id="photo-list" class="photo-list"></div>
-    </section>
-    <section class="section field-notes" aria-labelledby="notes-title">
-      <div><p class="kicker">03 / FIELD NOTES</p><h2 id="notes-title">出发前看一眼</h2></div>
-      <div><h3>交通与准备</h3><p>认准集合站 15 号线 G 口。备好防滑鞋、外套、水和充电宝。入园收费与预约以当日公告为准，园林绿化局名录列为免费、暂无需预约。</p><button class="plain" id="print" type="button">打印行程</button></div>
-      <div><h3>当天怎么调整</h3><p>遇雨、路滑或临时封闭，优先保留合照和可到达的湖边拍摄点，视现场路况省略山坡和支线。统一返程、休息与聚餐安排待确认。</p></div>
-    </section>
-    <noscript><section class="section"><h2>集合与拍摄顺序</h2><p>13:00 奥林匹克公园站 G 东北口集合。建议依次前往和合牌坊、中轴银杏、奥森南园南门、奥海西侧银杏，视情况去仰山西坡，最后前往森林公园南门站。启用 JavaScript 可查看完整时间表与交互地图。</p></section></noscript>
+      <div class="drawer-tabs" role="group" aria-label="抽屉内容"><button type="button" data-drawer="detail">景点详情</button><button type="button" data-drawer="list">完整行程</button></div>
+    </aside>
+    <noscript><section class="noscript"><h2>秋游路线</h2><p>13:00 在奥林匹克公园站 G 东北口集合。依次游览和合牌坊、中轴银杏、南园南门、奥海西侧，视情况去仰山西坡，建议在森林公园南门站返程。</p></section></noscript>
   </main>
-  <footer class="wrap footer">
-    <p>奥森南园 · 秋日光影 / 地点资料核查于 2026-11-05</p>
-    <p><a href="https://www.bjsubway.com/station/xltcx/line15/2014-12-24/446.html?sk=1" target="_blank" rel="noopener noreferrer">北京地铁 G 口</a> · <a href="https://yllhj.beijing.gov.cn/ggfw/bjsggml/zhgy/cyq/202206/t20220614_2740317.shtml" target="_blank" rel="noopener noreferrer">园方名录</a> · <a href="https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202610/t20261028_4921713.html" target="_blank" rel="noopener noreferrer">秋景参考</a> · <a href="./docs/MAP_DATA_AUDIT.md">地图资料审计</a></p>
-  </footer>
-  <nav class="mobile-nav" aria-label="页面快捷导航">
-    <a href="#meeting">集合</a><a href="#route">地图</a><a href="#schedule">行程</a><a href="#photos">景点</a>
-  </nav>
   <dialog id="share-dialog">
     <form method="dialog">
-      <h2>分享行程</h2>
-      <label for="share-url">当前页面链接</label>
+      <h2>分享行程</h2><label for="share-url">当前页面链接</label>
       <input id="share-url" type="url" readonly>
-      <div class="share-actions"><button id="copy" class="button primary" type="button">复制链接</button><button id="native-share" class="button" type="button" hidden>系统分享</button><button class="plain">关闭</button></div>
+      <div class="actions"><button id="copy" class="button primary" type="button">复制链接</button><button id="native-share" class="button" type="button" hidden>系统分享</button><button class="plain">关闭</button></div>
       <p id="share-status" role="status"></p>
     </form>
+  </dialog>
+  <dialog id="info-dialog">
+    <form method="dialog">
+      <h2>出行说明</h2>
+      <p>13:00 在 15 号线奥林匹克公园站 G 东北口集合。建议从 8 号线森林公园南门站返程，两站请分开搜索。</p>
+      <p>活动日期、结束时间、统一返程、休息和聚餐安排待确认。入园与道路开放以现场公告为准。遇雨或路滑，优先保留合照和可到达的湖边拍摄点。</p>
+      <p>地图为 OpenStreetMap 区域数据及 FOSSGIS 步行算路快照。步行时间为地图估算，入园与区域参考点请核对现场标识。</p>
+      <p><a href="./docs/MAP_DATA_AUDIT.md">地图数据来源</a> · <a href="./docs/PHOTO_SOURCES.md">实拍照片署名</a></p>
+      <div class="actions"><button class="button" id="print" type="button">打印行程</button><button class="plain">关闭</button></div>
+    </form>
+  </dialog>
+  <dialog id="photo-dialog" aria-labelledby="gallery-title">
+    <form method="dialog"><button class="plain gallery-close" aria-label="关闭照片">关闭</button><h2 id="gallery-title">景点实拍</h2></form>
+    <div id="gallery"></div>
+    <div class="actions" id="gallery-controls"><button type="button" class="button" id="photo-prev">上一张</button><button type="button" class="button" id="photo-next">下一张</button></div>
   </dialog>
 </body>
 </html>

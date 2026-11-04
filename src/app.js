@@ -1,143 +1,238 @@
 const byId = id => document.getElementById(id);
-const motion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const drawer = byId('drawer');
+const compact = matchMedia('(max-width: 899px)');
+const routeSegments = typeof walking === 'undefined' ? {} : walking.segments;
+const placePhotos = typeof photos === 'undefined' ? {} : photos;
 const checkinKey = 'aosen-autumn-trip.checkins.v1';
 let checked = new Set();
 try {
   const saved = JSON.parse(localStorage.getItem(checkinKey));
   if (Array.isArray(saved)) checked = new Set(saved.filter(id => Object.hasOwn(trip.stops, id)));
-} catch { /* A blocked or invalid store leaves check-ins available for this visit. */ }
+} catch { /* Check-ins remain available during this visit. */ }
 let planId = 'comfy';
 let rows = [];
-let selected = null;
-let map = null;
+let selected = 'meeting';
+let map;
 try {
-  map = createRouteMap(id => selectStop(id));
-} catch {
-  byId('map').replaceChildren();
-}
+  map = createRouteMap(id => selectStop(id), () => compact.matches ? drawer.offsetHeight : 0);
+} catch { /* A failed map must leave the itinerary and navigation available. */ }
 if (!map) {
-  const fallback = document.createElement('p');
-  fallback.className = 'map-fallback';
-  fallback.textContent = '地图暂不可用。请在行程中查看站点顺序及高德入口。';
-  byId('map').replaceChildren(fallback);
-}
-byId('reset-map').hidden = !map;
-byId('reset-map').addEventListener('click', () => map.reset());
-byId('meeting-time').textContent = trip.meetingTime;
-byId('trip-date').textContent = trip.date;
-byId('meeting-title').textContent = trip.stops.meeting.name;
-byId('meeting-link').href = amapLink(trip.stops.meeting);
-
-function locationLink(stop) {
-  return '<a class="action" target="_blank" rel="noopener noreferrer" href="' + amapLink(stop).replaceAll('&', '&amp;') + '">高德查看 ↗</a>';
+  byId('map-status').textContent = '地图暂不可用。仍可查看完整行程和高德导航。';
+  byId('overview').disabled = true;
+  if (compact.matches) drawer.dataset.state = 'list';
 }
 
-function focusButton(id, label) {
-  return '<button class="action" type="button" data-focus="' + id + '">' + label + '</button>';
+function external(href, label, className = 'plain') {
+  return '<a class="' + className + '" href="' + href.replaceAll('&', '&amp;') +
+    '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+}
+
+function photoMarkup(photo, thumb = false) {
+  const file = thumb ? photo.file.replace('.webp', '-thumb.webp') : photo.file;
+  return '<div class="photo-frame"><img loading="lazy" decoding="async" src="./assets/photos/' + file +
+    '" alt="' + photo.title + '"><span class="image-fallback" hidden>照片暂不可用</span></div>';
+}
+
+function photoCredit(photo) {
+  return '<figcaption>' + photo.title + ' · ' + photo.author + ' · ' +
+    external(photo.licenseUrl, photo.license, 'source') + ' · ' + external(photo.sourceUrl, '原图', 'source') + '</figcaption>';
+}
+
+document.addEventListener('error', event => {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement) || !image.parentElement?.classList.contains('photo-frame')) return;
+  image.hidden = true;
+  image.nextElementSibling.hidden = false;
+}, true);
+
+function setDrawer(state) {
+  drawer.dataset.state = state;
+  drawer.parentElement.dataset.sheet = state;
+  for (const button of drawer.querySelectorAll('[data-drawer]')) {
+    button.setAttribute('aria-pressed', String(button.dataset.drawer === state));
+  }
+  drawer.querySelector('.drawer-body').scrollTop = 0;
+}
+
+function formatMeters(meters) {
+  return meters >= 1000 ? (meters / 1000).toFixed(1) + ' 公里' : Math.round(meters) + ' 米';
 }
 
 function renderPlan() {
   const plan = trip.plans[planId];
-  let number = 0;
-  rows = plan.rows.map(([time, id, note]) => ({
-    time: time ?? trip.meetingTime, id, note, stop: trip.stops[id],
-    number: id ? ++number : null,
+  rows = plan.rows.map(([time, id], index) => ({
+    id, time: time ?? trip.meetingTime, number: index + 1, stop: trip.stops[id], place: placeFor(id),
+    segment: index ? routeSegments[plan.rows[index - 1][1] + ':' + id] : null,
   }));
+  const segments = rows.flatMap(({ segment }) => segment ? [segment] : []);
+  const complete = segments.length === rows.length - 1;
+  const distance = segments.reduce((total, s) => total + s.meters, 0);
+  const seconds = segments.reduce((total, s) => total + s.seconds, 0);
   byId('plan-note').textContent = plan.note;
+  byId('route-count').textContent = complete
+    ? '步行估算 ' + formatMeters(distance) + ' · ' + Math.round(seconds / 60) + ' 分钟'
+    : '部分路段待核实';
   for (const button of byId('plans').querySelectorAll('button')) {
     button.setAttribute('aria-pressed', String(button.dataset.plan === planId));
   }
-  byId('timeline').innerHTML = rows.map(({ time, id, stop, note, number }) =>
-    '<li class="stop" data-stop="' + (id ?? '') + '">' +
-    '<div class="stop-meta"><time>' + time + '</time>' +
-    (number ? '<span class="stop-number ' + stop.level + '">' + number + '</span>' : '') + '</div>' +
-    '<div><h4>' + (stop?.name ?? '行程提醒') + '</h4>' +
-    (stop ? '<span class="badge ' + stop.level + '">' + stop.badge + '</span>' : '') +
-    '<p>' + note + '</p>' + (stop ? '<div class="actions">' +
-    (map && stop.mapPoint ? focusButton(id, '地图定位') : '') + locationLink(stop) + '</div>' : '') +
-    '</div></li>'
-  ).join('');
-  map?.render(rows);
-  for (const button of byId('photo-list').querySelectorAll('[data-focus]')) {
-    button.hidden = !rows.some(row => row.id === button.dataset.focus);
-  }
-  if (!rows.some(row => row.id === selected)) selected = null;
-  selectStop(selected);
+  byId('timeline').innerHTML = rows.map(({ id, number, time, stop, segment }) => {
+    const photo = placePhotos[id]?.[0];
+    const walk = number > 1 ? (segment ? '<span>步行约 ' + Math.max(1, Math.round(segment.seconds / 60)) + ' 分钟</span>' : '<span>路线待核实</span>') : '';
+    return '<li><button type="button" class="stop-row" data-stop="' + id + '">' +
+      (photo ? photoMarkup(photo, true) : '<span class="row-ordinal" aria-hidden="true">' + number + '</span>') +
+      '<span class="row-text"><span class="row-time">' + number + ' / ' + time + '</span><strong>' + stop.name +
+      '</strong><span class="row-walk">' + stop.duration + (walk ? ' · ' + walk : '') + '</span></span><span aria-hidden="true">›</span></button>' +
+      '<span class="print-link">' + external(amapLink(id), '高德查看') + '</span></li>';
+  }).join('');
+  if (!rows.some(row => row.id === selected)) selected = 'meeting';
+  if (compact.matches) setDrawer(map ? 'peek' : 'list');
+  map?.render(rows, segments);
+  selectStop(selected, false);
 }
 
-function selectStop(id, center = false) {
+function selectStop(id, center = true) {
+  const index = rows.findIndex(row => row.id === id);
+  if (index < 0) return;
   selected = id;
-  map?.select(id, center);
-  for (const card of document.querySelectorAll('[data-stop]')) {
-    card.classList.toggle('selected', Boolean(id && card.dataset.stop === id));
+  const { stop, place, number, time } = rows[index];
+  const next = rows[index + 1];
+  const gallery = placePhotos[id] ?? [];
+  if (center && compact.matches) setDrawer('detail');
+  byId('selected-kicker').textContent = '第 ' + number + ' 站 · ' + time + ' · ' + stop.tag;
+  byId('selected-name').textContent = stop.name;
+  byId('selected-nav').href = amapWalk(id);
+  byId('map-amap').href = amapLink(id);
+  byId('next').disabled = !next;
+  byId('detail').innerHTML = (gallery.length
+    ? '<figure><button class="photo-button" type="button" data-gallery aria-label="查看照片">' + photoMarkup(gallery[0]) +
+      '<span>查看照片 · ' + gallery.length + ' 张</span></button>' + photoCredit(gallery[0]) + '</figure>'
+    : '<div class="photo-missing"><span>实景影像</span><strong>照片待补充</strong></div>') +
+    '<p class="stop-meta"><strong>' + stop.duration + '</strong><span>' + (place?.confidence ?? '点位待核实') + '</span></p>' +
+    '<p class="stop-detail">' + stop.detail + '</p><div class="actions detail-actions">' +
+    external(amapLink(id), '打开高德地图 ↗') +
+    '<button class="plain" type="button" data-copy-place>复制地点名</button>' +
+    '<button class="plain" type="button" data-checkin aria-pressed="' + checked.has(id) + '">' +
+    (checked.has(id) ? '已打卡 ✓' : '标记打卡') + '</button></div>' +
+    '<p id="detail-status" class="detail-status" role="status">打卡保存在当前浏览器</p>' +
+    (next ? '<div class="next-leg"><p>下一站 <strong>' + next.stop.name + '</strong></p>' +
+      external(amapWalk(next.id, id), '步行到下一站 ↗') + '</div>' : '');
+  for (const button of byId('timeline').querySelectorAll('[data-stop]')) {
+    if (button.dataset.stop === id) button.setAttribute('aria-current', 'step');
+    else button.removeAttribute('aria-current');
   }
-  const row = rows.find(item => item.id === id && item.stop);
-  byId('map-selection').innerHTML = row
-    ? '<strong>' + row.number + ' · ' + row.stop.name + '</strong><p>' + row.stop.detail + '</p>' +
-      '<div class="actions"><a class="action" href="#schedule" data-row="' + id + '">查看此站行程</a>' + locationLink(row.stop) + '</div>'
-    : '点击地图编号查看地点详情。';
-  if (center) byId('map-panel').scrollIntoView({ behavior: motion ? 'smooth' : 'instant', block: 'start' });
+  map?.select(id, center);
+  if (center && !compact.matches) drawer.querySelector('.drawer-body').scrollTop = 0;
 }
 
-byId('plans').innerHTML = Object.entries(trip.plans).map(([key, plan]) =>
-  '<button type="button" data-plan="' + key + '"><strong>' + plan.label +
-  '</strong><span>' + trip.meetingTime + '–' + plan.end + '</span></button>'
-).join('');
+byId('meeting-time').textContent = trip.meetingTime;
+byId('trip-date').textContent = trip.date;
+byId('plans').innerHTML = Object.entries(trip.plans).map(([id, plan]) =>
+  '<button type="button" data-plan="' + id + '"><strong>' + plan.label + '</strong><span>' +
+  trip.meetingTime + '–' + plan.end + '</span></button>').join('');
 
-byId('plans').addEventListener('click', event => {
-  const button = event.target.closest('[data-plan]');
-  if (!button || button.dataset.plan === planId) return;
-  planId = button.dataset.plan;
-  renderPlan();
+const photoDialog = byId('photo-dialog');
+let photoIndex = 0;
+function showPhoto(index) {
+  const items = placePhotos[selected] ?? [];
+  if (!items.length) return;
+  photoIndex = (index + items.length) % items.length;
+  const photo = items[photoIndex];
+  byId('gallery-title').textContent = trip.stops[selected].name + ' · ' + (photoIndex + 1) + '/' + items.length;
+  byId('gallery').innerHTML = '<figure>' + photoMarkup(photo) + photoCredit(photo) + '</figure>';
+  byId('gallery-controls').hidden = items.length < 2;
+}
+byId('photo-prev').addEventListener('click', () => showPhoto(photoIndex - 1));
+byId('photo-next').addEventListener('click', () => showPhoto(photoIndex + 1));
+let swipeX = 0;
+byId('gallery').addEventListener('touchstart', event => { swipeX = event.changedTouches[0].clientX; }, { passive: true });
+byId('gallery').addEventListener('touchend', event => {
+  const delta = event.changedTouches[0].clientX - swipeX;
+  if (Math.abs(delta) > 44) showPhoto(photoIndex + (delta < 0 ? 1 : -1));
+}, { passive: true });
+
+const handle = byId('drawer-handle');
+const states = ['peek', 'detail', 'list'];
+function moveDrawer(delta) {
+  const index = states.indexOf(drawer.dataset.state);
+  setDrawer(states[Math.max(0, Math.min(states.length - 1, index + delta))]);
+  if (drawer.dataset.state === 'peek') map?.reset();
+  else if (drawer.dataset.state === 'detail') map?.select(selected, true);
+}
+let dragStart = null;
+let dragHandled = false;
+handle.addEventListener('pointerdown', event => {
+  dragStart = event.clientY;
+  dragHandled = false;
+  handle.setPointerCapture(event.pointerId);
+});
+handle.addEventListener('pointerup', event => {
+  if (dragStart !== null && Math.abs(event.clientY - dragStart) > 28) {
+    dragHandled = true;
+    moveDrawer(event.clientY < dragStart ? 1 : -1);
+  }
+  dragStart = null;
+});
+handle.addEventListener('pointercancel', () => { dragStart = null; dragHandled = false; });
+handle.addEventListener('click', () => {
+  if (dragHandled) { dragHandled = false; return; }
+  moveDrawer(drawer.dataset.state === 'list' ? -2 : 1);
 });
 
-function renderPhotos() {
-  byId('photo-list').innerHTML = trip.photos.map(({ id, tag, art, duration }) => {
-    const stop = trip.stops[id];
-    return '<article class="photo" data-stop="' + id + '"><div class="photo-art ' + art + '"><span>' + tag +
-      '</span></div><div class="photo-copy"><h3>' + stop.name + '</h3><p class="duration">' + duration +
-      '</p><p>' + stop.detail + '</p><div class="actions">' +
-      (map && stop.mapPoint ? focusButton(id, '地图定位') : '') +
-      locationLink(stop) + '<button class="action checkin" type="button" data-checkin="' + id +
-      '" aria-label="' + stop.name + '打卡" aria-pressed="' + checked.has(id) + '">' +
-      (checked.has(id) ? '✓ 已打卡' : '标记打卡') + '</button></div></div></article>';
-  }).join('');
-}
-
-document.addEventListener('click', event => {
-  const focus = event.target.closest('[data-focus]');
-  if (focus) selectStop(focus.dataset.focus, true);
-  const rowLink = event.target.closest('[data-row]');
-  if (rowLink) {
-    const card = byId('timeline').querySelector('[data-stop="' + rowLink.dataset.row + '"]');
-    if (card) {
-      event.preventDefault();
-      card.scrollIntoView({ behavior: motion ? 'smooth' : 'instant', block: 'center' });
-      card.querySelector('button, a').focus({ preventScroll: true });
+document.addEventListener('click', async event => {
+  const target = event.target.closest('button');
+  if (!target) return;
+  if (target.dataset.plan && target.dataset.plan !== planId) {
+    planId = target.dataset.plan;
+    renderPlan();
+  }
+  if (target.dataset.stop) {
+    selectStop(target.dataset.stop);
+    if (compact.matches) handle.focus({ preventScroll: true });
+  }
+  if (target.hasAttribute('data-meeting')) selectStop('meeting');
+  if (target.dataset.drawer) {
+    setDrawer(drawer.dataset.state === target.dataset.drawer ? 'peek' : target.dataset.drawer);
+    if (drawer.dataset.state === 'detail') map?.select(selected, true);
+    if (drawer.dataset.state === 'peek') map?.reset();
+  }
+  if (target.id === 'overview') {
+    if (compact.matches) setDrawer('peek');
+    map?.reset();
+  }
+  if (target.id === 'next') {
+    const next = rows[rows.findIndex(row => row.id === selected) + 1];
+    if (next) selectStop(next.id);
+  }
+  if (target.hasAttribute('data-gallery')) {
+    showPhoto(0);
+    photoDialog.showModal();
+  }
+  if (target.hasAttribute('data-checkin')) {
+    if (checked.has(selected)) checked.delete(selected);
+    else checked.add(selected);
+    target.setAttribute('aria-pressed', String(checked.has(selected)));
+    target.textContent = checked.has(selected) ? '已打卡 ✓' : '标记打卡';
+    try { localStorage.setItem(checkinKey, JSON.stringify([...checked])); }
+    catch { byId('detail-status').textContent = '打卡仅在此页保留'; }
+  }
+  if (target.hasAttribute('data-copy-place')) {
+    const name = trip.stops[selected].name;
+    try {
+      await navigator.clipboard.writeText(name);
+      if (byId('detail-status')) byId('detail-status').textContent = '已复制 ' + name;
+    } catch {
+      if (byId('detail-status')) byId('detail-status').textContent = '请在高德搜索：' + name;
     }
   }
-  const button = event.target.closest('[data-checkin]');
-  if (!button) return;
-  const id = button.dataset.checkin;
-  if (checked.has(id)) checked.delete(id);
-  else checked.add(id);
-  button.setAttribute('aria-pressed', String(checked.has(id)));
-  button.textContent = checked.has(id) ? '✓ 已打卡' : '标记打卡';
-  try {
-    localStorage.setItem(checkinKey, JSON.stringify([...checked]));
-  } catch {
-    document.querySelector('#photos .section-heading > p').textContent = '当前浏览器无法保存，打卡仅在此页保留。';
-  }
 });
 
-const dialog = byId('share-dialog');
+const shareDialog = byId('share-dialog');
 const urlInput = byId('share-url');
 byId('native-share').hidden = !navigator.share;
 byId('share').addEventListener('click', () => {
   urlInput.value = new URL(location.pathname, location.href).href;
-  byId('share-status').textContent = ['localhost', '127.0.0.1'].includes(location.hostname)
-    ? '当前是本地预览地址，仅此设备可用。' : '';
-  dialog.showModal();
+  byId('share-status').textContent = '';
+  shareDialog.showModal();
 });
 byId('copy').addEventListener('click', async () => {
   try {
@@ -146,17 +241,24 @@ byId('copy').addEventListener('click', async () => {
   } catch {
     urlInput.focus();
     urlInput.select();
-    byId('share-status').textContent = '请选择并手动复制上方链接。';
+    byId('share-status').textContent = '请手动复制上方链接。';
   }
 });
 byId('native-share').addEventListener('click', async () => {
   try {
     await navigator.share({ title: document.title, url: urlInput.value });
-    dialog.close();
+    shareDialog.close();
   } catch (error) {
     if (error.name !== 'AbortError') byId('share-status').textContent = '可通过复制链接分享。';
   }
 });
-byId('print').addEventListener('click', () => window.print());
-renderPhotos();
+byId('info').addEventListener('click', () => byId('info-dialog').showModal());
+byId('print').addEventListener('click', () => {
+  byId('info-dialog').close();
+  window.print();
+});
+compact.addEventListener('change', () => {
+  if (compact.matches) setDrawer(map ? 'peek' : 'list');
+  map?.reset();
+});
 renderPlan();

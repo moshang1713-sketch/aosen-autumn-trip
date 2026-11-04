@@ -1,22 +1,20 @@
 # 奥森南园 · 秋日光影
 
-队友共享的手机秋游指南。集合为 **13:00，奥林匹克公园站 G 东北口**。活动日期、建议结束时间和统一返程等待组织者确认。
+手机优先的秋游地图。集合为 **13:00，奥林匹克公园站 G 东北口**。活动日期、建议结束时间和统一返程等待组织者确认。[公开站点](https://moshang1713-sketch.github.io/aosen-autumn-trip/)
 
 ## 本地运行
 
-在项目根目录执行 `python -m http.server 8000 --bind 127.0.0.1`，浏览 [本地预览](http://127.0.0.1:8000/)。入口为 `index.html`。原生 HTML/CSS/JS，无需安装或构建，源码即 Pages 发布产物。语法检查可运行 `node --check src/trip.js`、`node --check src/map.js`、`node --check src/app.js`。
+在项目根目录执行 `python -m http.server 8000 --bind 127.0.0.1`，打开 [本地预览](http://127.0.0.1:8000/)。入口是 `index.html`。站点源码即发布产物，无需 npm 安装或构建。运行 `node --test tests/map-data.cjs` 验证地理数据和导航坐标。
 
-- 行程、时间、地点、拍摄提示在 `src/trip.js`。修改地图编号顺序时，只需调整对应方案的行程数组。
-- `mapPoint` 是 `assets/route.svg` 的本地示意坐标（从下向上计算的 y，以及从左向右的 x），与经纬度无关。没有点位时省略该字段。
-- 主题色及版式在 `src/styles.css`。插画、图标和示意底图为本项目原创 SVG。站内地图无需密钥或瓦片网络。实时查找由高德外部网页或 App 负责。
-- 打卡只保存在当前浏览器的本地存储。方案切换保留打卡，清除浏览器数据会重置。出行日期和天气均由组织者及现场确认。
+- `src/trip.js` 管理行程顺序、建议时间、地点说明及高德链接。
+- `src/places.js` 保存地点原始证据、WGS84 地图点和 GCJ-02 导航点。
+- `src/walks.js` 保存逐段步行快照。修改站序时若缺少新路段，前端会标明缺口。现场导航可通过高德步行 URI 使用。
+- `assets/maps/aosen-osm.geojson` 为区域地理底图。数据署名 © OpenStreetMap contributors，采用 [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)。地图不调用外部瓦片。
+- `src/photos.js` 及 `assets/photos/` 管理照片和缩略图，来源与权限见 [照片清单](docs/PHOTO_SOURCES.md)。
+- 打卡保存在本机浏览器，方案切换保留。日期和建议安排由组织者确认。
 
-## 复用及许可证
+## 开源与部署
 
-原始基础为工作区内的「奥森南园秋游网站.zip」，保留双方案、Leaflet 路线、地点导航、分享和打印。二次开发拆分数据、地图适配、样式和界面，增加秋日插画、地图与时间轴双向联动、拍照卡片、本机打卡和地图失败降级。
+初版来自用户提供的「奥森南园秋游网站.zip」，本仓库保持原站点及数据结构。地图复用 [Leaflet v1.9.4](https://github.com/Leaflet/Leaflet/tree/v1.9.4)（[提交 d15112c](https://github.com/Leaflet/Leaflet/commit/d15112c9e8ac339f0f74f563959d0423d291308d)，[BSD-2-Clause 许可](vendor/leaflet/LICENSE)）。本轮将旧示意图升级为地理底图与步行路径、桌面侧栏和手机抽屉，并添加合规实拍。见 [开源选型](docs/OPEN_SOURCE_RESEARCH.md)、[地图技术决策](docs/MAP_TECH_DECISION.md) 与 [地图数据审计](docs/MAP_DATA_AUDIT.md)。
 
-地图引擎复用 [Leaflet/Leaflet v1.9.4](https://github.com/Leaflet/Leaflet/tree/v1.9.4)，[起始提交 d15112c9e8ac339f0f74f563959d0423d291308d](https://github.com/Leaflet/Leaflet/commit/d15112c9e8ac339f0f74f563959d0423d291308d)。`vendor/leaflet` 中为 npm 正式包分发文件，BSD-2-Clause 版权及许可原文见 [LICENSE](vendor/leaflet/LICENSE)。本次仅在站点适配层改造。详见 [开源选型](docs/OPEN_SOURCE_RESEARCH.md) 与 [地图审计](docs/MAP_DATA_AUDIT.md)。
-
-## GitHub Pages
-
-推送项目到专用 GitHub 仓库的 `main` 分支。仓库 Settings → Pages → Deploy from a branch → `main` → `/ (root)`。根目录的 `.nojekyll` 跳过 Jekyll。站内资源均用相对路径，可从仓库子路径访问。启用后以 Pages 设置页提供的实际 HTTPS 链接为准。[GitHub Pages 发布文档](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+GitHub Pages 使用 `main` 根目录并通过 `.nojekyll` 跳过 Jekyll，资源采用相对路径。先在独立分支验证，通过后快进合并到主分支，待 Pages 部署完成再测试公开 URL。旧示意版可从提交 `620c127` 查看。
