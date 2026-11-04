@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560">
+<title>原创景观插画，奥海秋意</title>
+<defs>
+ <linearGradient id="sky" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#d5ac6b"/><stop offset=".62" stop-color="#edce90"/><stop offset="1" stop-color="#a7b08e"/></linearGradient>
+ <linearGradient id="lake" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#a6b499"/><stop offset="1" stop-color="#334d48"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#ffecaf" stop-opacity=".9"/><stop offset="1" stop-color="#f6db9f" stop-opacity="0"/></radialGradient>
+ <pattern id="paper" width="23" height="19" patternUnits="userSpaceOnUse"><path d="M4 2h1m6 6h1m9 9h1M2 14h1m14-9h1" stroke="#fff3c8" opacity=".35"/></pattern>
+ <g id="fan"><path d="M0 13C-6 9-16 3-20-9c5-5 13-6 20-4 7-2 15-1 20 4C16 3 6 9 0 13Z" fill="currentColor"/><path d="M0 17v-5m0 0-11-18M0 12V-8m0 20L11-6" fill="none" stroke="#79542d" stroke-opacity=".4" stroke-width=".7"/></g>
+ <g id="sprig"><path d="M0 0q37 29 103 88" fill="none" stroke="#443a25" stroke-width="3"/><use href="#fan" transform="translate(25 14) rotate(27) scale(.85)"/><use href="#fan" transform="translate(46 39) rotate(-43) scale(1.15)"/><use href="#fan" transform="translate(71 50) rotate(38) scale(1.05)"/><use href="#fan" transform="translate(98 75) rotate(51) scale(.78)"/></g>
+</defs>
+<rect width="1200" height="560" fill="url(#sky)"/>
+<ellipse cx="838" cy="162" rx="359" ry="211" fill="url(#light)"/>
+<circle cx="845" cy="148" r="37" fill="#ffe7a6" opacity=".8"/>
+<path d="M0 265q142-63 241-52 79 10 151-8 119-62 211-4 119 21 176 39 102-27 192-29 132 13 229 49v88H0Z" fill="#7d8c70"/>
+<path d="M0 294q155-31 245-8 68 25 179 9 123-42 237-37 77 8 154 33 134-9 218-4 111-32 167-16v68H0Z" fill="#536b55"/>
+<path d="M0 320q194 8 342 5t283 0 277-7 298 3v239H0Z" fill="url(#lake)"/>
+<g stroke-linecap="round" fill="none">
+ <path d="M597 355h281m-216 24h289m-247 35h244m-181 25h320m-397 39h314m-457 35h501" stroke="#f6d899" stroke-width="3" opacity=".42"/>
+ <path d="M87 351h404m-301 34h211m-247 50h343m-465 38h371m-299 41h341m396-125h273m-97-25h175" stroke="#c9d1ad" stroke-width="2" opacity=".47"/>
+</g>
+<path d="M1200 460q-141 19-220 72l-60 28h280Z" fill="#304737"/>
+<path d="M1200 492q-110 23-180 68h180Z" fill="#53613d"/>
+<g fill="none" stroke-linecap="round"><path d="M1200 1q-69 24-149 78t-176 66m301-108q-12 43-95 101m-8-82q-64-4-123-1" stroke="#453b26" stroke-width="6"/><path d="M1046 79q-73 63-135 79m243-78q-21 62-45 91m-118-83q-35 28-91 34" stroke="#5a492c" stroke-width="2.4"/></g>
+<g><use href="#sprig" transform="translate(1123 4) rotate(29) scale(1.4)" color="#d49331"/><use href="#sprig" transform="translate(1161 13) rotate(63)" color="#bf782d"/><use href="#sprig" transform="translate(1108 49) rotate(95) scale(1.32)" color="#e4aa41"/><use href="#sprig" transform="translate(1039 79) rotate(97)" color="#eec05d"/><use href="#sprig" transform="translate(995 57) rotate(138) scale(.78)" color="#dca23d"/><use href="#sprig" transform="translate(979 117) rotate(82) scale(.75)" color="#e7ac4a"/><use href="#sprig" transform="translate(1183 76) rotate(61) scale(.98)" color="#bb6c30"/><use href="#sprig" transform="translate(1200 110) rotate(81) scale(.92)" color="#dca04a"/><use href="#fan" transform="translate(1068 234) rotate(35) scale(.54)" color="#e9ba61"/><use href="#fan" transform="translate(1128 274) rotate(-33) scale(.39)" color="#db9e45"/><use href="#fan" transform="translate(899 246) rotate(51) scale(.3)" color="#f0c871"/></g>
+<rect width="1200" height="560" fill="url(#paper)" opacity=".68"/>
+</svg>

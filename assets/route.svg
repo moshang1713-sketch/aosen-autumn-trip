@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 540">
+<title>奥森路线概念示意</title>
+<defs><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0v28" fill="none" stroke="#788b62" stroke-opacity=".14"/></pattern></defs>
+<rect width="440" height="540" rx="14" fill="#eff0dc"/><rect width="440" height="540" rx="14" fill="url(#grid)"/>
+<path d="M0 16Q129-24 264 22T440 49V226Q344 290 211 245T0 277Z" fill="#dce6c5"/>
+<path d="M0 286Q150 255 286 288T440 283" stroke="#fdfaf1" stroke-width="24" fill="none"/>
+<path d="M261 532Q313 454 261 390T234 283" stroke="#e0c997" stroke-width="45" opacity=".38" fill="none"/>
+<g stroke="#a0b180" opacity=".62" fill="none" stroke-width="1.5">
+<path d="M41 72q75-93 192-40t147 44M32 88q76-94 192-45t148 45M31 105q81-96 193-49t148 48M55 109q70-70 169-38t133 43"/>
+</g>
+<path d="M182 150c24-35 89-58 135-23s54 40 45 65c-6 20-36 22-59 17-45-10-52 22-86 11-23-8-56-39-35-70Z" fill="#95b8a7" stroke="#7d9e90" stroke-width="2"/>
+<path d="M210 169q45-42 101-20m-90 48q46-17 113-14" stroke="#c6d9c0" stroke-width="2" fill="none"/>
+<g fill="#587152" font-family="system-ui,sans-serif" font-size="18" font-weight="650">
+<text x="232" y="76">仰山</text><text x="260" y="177">奥海</text>
+<text x="35" y="236">奥森南园</text><text x="36" y="400">奥林匹克公园中轴</text>
+</g>
+<g fill="#637953"><path d="M393 46l9-21 9 21-9-5Z"/><text x="395" y="65" font-family="system-ui,sans-serif" font-size="13">北</text></g>
+<g fill="#c09547" opacity=".55"><circle cx="72" cy="130" r="14"/><circle cx="65" cy="158" r="8"/><circle cx="48" cy="166" r="12"/><circle cx="89" cy="166" r="10"/><circle cx="52" cy="201" r="8"/><circle cx="83" cy="199" r="12"/><circle cx="150" cy="417" r="9"/><circle cx="145" cy="438" r="10"/><circle cx="157" cy="465" r="11"/><circle cx="181" cy="481" r="6"/><circle cx="384" cy="390" r="12"/></g>
+</svg>
