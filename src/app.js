@@ -68,7 +68,7 @@ function renderPlan() {
     segment: index ? routeSegments[plan.rows[index - 1][1] + ':' + id] : null,
   }));
   const segments = rows.flatMap(({ segment }) => segment ? [segment] : []);
-  const complete = segments.length === rows.length - 1;
+  const complete = segments.length === rows.length - 1 && !segments.some(segment => segment.approximate);
   const distance = segments.reduce((total, s) => total + s.meters, 0);
   const seconds = segments.reduce((total, s) => total + s.seconds, 0);
   byId('plan-note').textContent = plan.note;
@@ -80,7 +80,7 @@ function renderPlan() {
   }
   byId('timeline').innerHTML = rows.map(({ id, number, time, stop, segment }) => {
     const photo = placePhotos[id]?.[0];
-    const walk = number > 1 ? (segment ? '<span>步行约 ' + Math.max(1, Math.round(segment.seconds / 60)) + ' 分钟</span>' : '<span>路线待核实</span>') : '';
+    const walk = number > 1 ? (segment?.approximate ? '<span>参考步道</span>' : segment ? '<span>步行约 ' + Math.max(1, Math.round(segment.seconds / 60)) + ' 分钟</span>' : '<span>路线待核实</span>') : '';
     return '<li><button type="button" class="stop-row" data-stop="' + id + '">' +
       (photo ? photoMarkup(photo, true) : '<span class="row-ordinal" aria-hidden="true">' + number + '</span>') +
       '<span class="row-text"><span class="row-time">' + number + ' / ' + time + '</span><strong>' + stop.name +

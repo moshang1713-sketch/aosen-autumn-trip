@@ -75,10 +75,14 @@ function createRouteMap(onSelect, obscuredHeight) {
     for (const [index, { id, segment }] of rows.entries()) {
       if (!segment) continue;
       const line = segment.coordinates.map(latLng);
+      if (segment.approximate) {
+        line.unshift(latLng(rows[index - 1].place.mapLngLat));
+        line.push(latLng(rows[index].place.mapLngLat));
+      }
       for (const point of line) routeBounds.extend(point);
-      leaflet.polyline(line, { color: '#fffcf0', weight: 8, interactive: false }).addTo(route);
+      const casing = leaflet.polyline(line, { color: '#fffcf0', weight: 8, interactive: false }).addTo(route);
       const layer = leaflet.polyline(line, { interactive: false, className: 'walk-segment' }).addTo(route);
-      paths.push({ layer, from: rows[index - 1].id, to: id });
+      paths.push({ layer, casing, approximate: segment.approximate, from: rows[index - 1].id, to: id });
     }
     for (const { id, number, stop, place } of rows) {
       if (!place?.mapLngLat) continue;
@@ -106,10 +110,19 @@ function createRouteMap(onSelect, obscuredHeight) {
     for (const [id, marker] of markers) {
       marker.getElement().dataset.checked = String(checked.has(id));
     }
-    for (const { layer, from, to } of paths) {
+    for (const { layer, casing, approximate, from, to } of paths) {
+      casing.bringToFront();
+      layer.bringToFront();
       const done = checked.has(from) && checked.has(to);
-      layer.setStyle({ color: done ? '#23704e' : '#ad493d', weight: done ? 5.5 : 4.5, dashArray: done ? null : '7 7' });
+      layer.setStyle({ color: done ? '#23704e' : '#ad493d', weight: done ? 5.5 : 4.5, dashArray: approximate ? '2 6' : done ? null : '7 7' });
       layer.getElement()?.classList.toggle('walk-complete', done);
+    }
+    // Raise the whole completed stroke, including its casing, above pending strokes.
+    for (const { layer, casing, from, to } of paths) {
+      if (checked.has(from) && checked.has(to)) {
+        casing.bringToFront();
+        layer.bringToFront();
+      }
     }
   }
 
