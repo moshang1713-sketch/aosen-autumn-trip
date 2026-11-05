@@ -12,3 +12,10 @@
 | return-station.webp | 森林公园南门站外景，文件名及地理标注核对。 | Weixi Zeng · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) · [来源](https://commons.wikimedia.org/wiki/File:森林公园地铁站_Olympic_Forest_Metro_Sta._-_panoramio.jpg) |
 
 和合牌坊、中轴银杏大道、宣言广场、仰山西坡暂缺同时满足地点准确和可再分发要求的照片，显示「照片待补充」。插画仅装饰此状态，不作为实拍展示。将来可在 `src/photos.js` 添加已授权照片、作者、许可证链接、原始来源和描述，在 `assets/photos/` 放置对应 WebP 及 `-thumb.webp`。
+
+## 本轮新增
+
+- lake-ginkgo-3.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_3.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- lake-ginkgo-4.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_4.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- lake-ginkgo-5.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_5.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- lake-ginkgo-6.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_6.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

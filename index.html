@@ -34,7 +34,7 @@
       </div>
       <div id="map-status" class="map-status" role="status">正在加载本地区域底图…</div>
       <div class="map-tools" role="group" aria-label="地图快捷操作">
-        <button type="button" data-meeting>集合点</button><button type="button" id="next">下一站</button><button type="button" id="overview">全程</button>
+        <button type="button" id="locate">定位到我</button><button type="button" data-meeting>集合点</button><button type="button" id="next">下一站</button><button type="button" id="overview">全程</button>
         <a id="map-amap" href="https://uri.amap.com/search?keyword=奥林匹克公园地铁站G东北口&amp;city=北京&amp;callnative=1" target="_blank" rel="noopener noreferrer">在高德打开 ↗</a>
       </div>
       <div class="map-foot"><span>橙线 · 步行算路参考</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></div>
@@ -74,9 +74,16 @@
       <div class="actions"><button class="button" id="print" type="button">打印行程</button><button class="plain">关闭</button></div>
     </form>
   </dialog>
+  <dialog id="amap-preview" aria-labelledby="amap-preview-title">
+    <form method="dialog"><h2 id="amap-preview-title">高德步行预览</h2><button class="plain">关闭</button></form>
+    <p>高德独立地图，仅预览当前路段。开放情况以现场为准。</p>
+    <iframe id="amap-frame" title="高德当前路段地图" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <a id="amap-preview-web" class="button" target="_blank" rel="noopener noreferrer">在高德网页版打开 ↗</a>
+  </dialog>
   <dialog id="photo-dialog" aria-labelledby="gallery-title">
     <form method="dialog"><button class="plain gallery-close" aria-label="关闭照片">关闭</button><h2 id="gallery-title">景点实拍</h2></form>
     <div id="gallery"></div>
+    <div id="gallery-thumbs" class="gallery-thumbs" aria-label="照片缩略图"></div>
     <div class="actions" id="gallery-controls"><button type="button" class="button" id="photo-prev">上一张</button><button type="button" class="button" id="photo-next">下一张</button></div>
   </dialog>
 </body>

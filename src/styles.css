@@ -177,3 +177,12 @@ dialog h2 { font-size: 1.2rem; }
   .print-link { display: inline; }
   .stop-row { break-inside: avoid; }
 }
+
+#amap-frame { width: 100%; height: min(55dvh, 460px); border: 1px solid var(--line); }
+.gallery-thumbs { display: flex; gap: 6px; overflow-x: auto; padding: 5px 3px; }
+.gallery-thumbs button { flex: 0 0 56px; min-height: 44px; border: 1px solid var(--line); border-radius: 7px; background: var(--card); padding: 2px; }
+.gallery-thumbs button[aria-pressed="true"] { border-color: var(--amber); outline: 2px solid var(--amber); }
+#photo-dialog .gallery-thumbs .photo-frame { height: 44px; }
+#photo-dialog .gallery-thumbs img { object-fit: cover; }
+.app-hint { padding: 6px 8px; margin-bottom: 5px; background: #fbefc9; font-size: .77rem; }
+@media (max-width: 390px) { .map-tools button, .map-tools a { padding-inline: 5px; } }

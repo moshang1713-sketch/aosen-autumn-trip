@@ -43,10 +43,10 @@ function amapLink(id) {
   });
 }
 
-function amapWalk(to, from) {
+function amapWalk(to, from, native = true) {
   const endpoint = id => placeFor(id).navigationLngLat.join(',') + ',' + trip.stops[id].name;
   if (!placeFor(to)?.navigationLngLat) return amapLink(to);
-  const params = new URLSearchParams({ to: endpoint(to), mode: 'walk', src: 'aosen-autumn-trip', callnative: '1' });
+  const params = new URLSearchParams({ to: endpoint(to), mode: 'walk', src: 'aosen-autumn-trip', callnative: native ? '1' : '0' });
   if (from && placeFor(from)?.navigationLngLat) params.set('from', endpoint(from));
   return 'https://uri.amap.com/navigation?' + params;
 }

@@ -118,5 +118,16 @@ function createRouteMap(onSelect, obscuredHeight) {
   zoom.getContainer().querySelector('.leaflet-control-zoom-in').setAttribute('aria-label', '放大地图');
   zoom.getContainer().querySelector('.leaflet-control-zoom-out').setAttribute('aria-label', '缩小地图');
   map.on('resize', reset);
-  return { render, select, reset };
+  let accuracyCircle;
+  let locationDot;
+  function showLocation({ latitude, longitude, accuracy }) {
+    const point = [latitude, longitude];
+    accuracyCircle?.remove();
+    locationDot?.remove();
+    accuracyCircle = leaflet.circle(point, { radius: accuracy, color: '#246bcb', fillOpacity: .12, weight: 1 }).addTo(map);
+    locationDot = leaflet.circleMarker(point, { radius: 7, color: '#fff', weight: 3, fillColor: '#246bcb', fillOpacity: 1 })
+      .bindTooltip('我的位置 · 约 ±' + Math.ceil(accuracy) + ' 米').addTo(map);
+    map.setView(point, Math.max(map.getZoom(), 16), { animate: false });
+  }
+  return { render, select, reset, showLocation };
 }

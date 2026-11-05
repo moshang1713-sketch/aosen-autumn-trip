@@ -11,6 +11,10 @@ const photos = {
   lake: [
     { file: 'lake-ginkgo-1.webp', title: '南园奥海西南侧银杏林', author: '星外之神', license: 'CC BY-SA 4.0', licenseUrl: creativeCommons + 'by-sa/4.0/', sourceUrl: commons + 'Ginkgo_forest_in_Beijing_Olympic_Forest_Park_1.jpg' },
     { file: 'lake-ginkgo-2.webp', title: '同一片银杏林的另一视角', author: '星外之神', license: 'CC BY-SA 4.0', licenseUrl: creativeCommons + 'by-sa/4.0/', sourceUrl: commons + 'Ginkgo_forest_in_Beijing_Olympic_Forest_Park_2.jpg' },
+    {"file": "lake-ginkgo-3.webp", "title": "奥海南侧与西侧一带银杏林 · 3", "date": "2023-10-01", "author": "星外之神", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_3.jpg"},
+    {"file": "lake-ginkgo-4.webp", "title": "奥海南侧与西侧一带银杏林 · 4", "date": "2023-10-01", "author": "星外之神", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_4.jpg"},
+    {"file": "lake-ginkgo-5.webp", "title": "奥海南侧与西侧一带银杏林 · 5", "date": "2023-10-01", "author": "星外之神", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_5.jpg"},
+    {"file": "lake-ginkgo-6.webp", "title": "奥海南侧与西侧一带银杏林 · 6", "date": "2023-10-01", "author": "星外之神", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_6.jpg"},
   ],
   return: [
     { file: 'return-station.webp', title: '森林公园南门站外景', author: 'Weixi Zeng', license: 'CC BY-SA 3.0', licenseUrl: creativeCommons + 'by-sa/3.0/', sourceUrl: commons + encodeURIComponent('森林公园地铁站 Olympic Forest Metro Sta. - panoramio.jpg') },

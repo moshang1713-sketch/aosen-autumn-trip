@@ -1,5 +1,7 @@
 const byId = id => document.getElementById(id);
 const drawer = byId('drawer');
+const mobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const inAppBrowser = /MicroMessenger|QQ\//i.test(navigator.userAgent);
 const compact = matchMedia('(max-width: 899px)');
 const routeSegments = typeof walking === 'undefined' ? {} : walking.segments;
 const placePhotos = typeof photos === 'undefined' ? {} : photos;
@@ -19,6 +21,7 @@ try {
 if (!map) {
   byId('map-status').textContent = '地图暂不可用。仍可查看完整行程和高德导航。';
   byId('overview').disabled = true;
+  byId('locate').disabled = true;
   if (compact.matches) drawer.dataset.state = 'list';
 }
 
@@ -34,7 +37,7 @@ function photoMarkup(photo, thumb = false) {
 }
 
 function photoCredit(photo) {
-  return '<figcaption>' + photo.title + ' · ' + photo.author + ' · ' +
+  return '<figcaption>' + photo.title + ' · ' + (photo.date ? '拍摄 ' + photo.date + ' · ' : '拍摄日期未核实 · ') + photo.author + ' · ' +
     external(photo.licenseUrl, photo.license, 'source') + ' · ' + external(photo.sourceUrl, '原图', 'source') + '</figcaption>';
 }
 
@@ -100,22 +103,25 @@ function selectStop(id, center = true) {
   if (center && compact.matches) setDrawer('detail');
   byId('selected-kicker').textContent = '第 ' + number + ' 站 · ' + time + ' · ' + stop.tag;
   byId('selected-name').textContent = stop.name;
-  byId('selected-nav').href = amapWalk(id);
+  byId('selected-nav').href = amapWalk(id, mobileDevice ? undefined : rows[index - 1]?.id, mobileDevice);
+  byId('selected-nav').textContent = mobileDevice ? '高德 App 导航 ↗' : '高德网页版 ↗';
   byId('map-amap').href = amapLink(id);
   byId('next').disabled = !next;
   byId('detail').innerHTML = (gallery.length
     ? '<figure><button class="photo-button" type="button" data-gallery aria-label="查看照片">' + photoMarkup(gallery[0]) +
       '<span>查看照片 · ' + gallery.length + ' 张</span></button>' + photoCredit(gallery[0]) + '</figure>'
-    : '<div class="photo-missing"><span>实景影像</span><strong>照片待补充</strong></div>') +
+    : '<div class="photo-missing"><span>实景影像</span><strong>暂无已授权实拍</strong></div>') +
     '<p class="stop-meta"><strong>' + stop.duration + '</strong><span>' + (place?.confidence ?? '点位待核实') + '</span></p>' +
     '<p class="stop-detail">' + stop.detail + '</p><div class="actions detail-actions">' +
-    external(amapLink(id), '打开高德地图 ↗') +
-    '<button class="plain" type="button" data-copy-place>复制地点名</button>' +
+    external(amapWalk(id, rows[index - 1]?.id, false), '高德网页版 ↗') +
+    '<button class="plain" type="button" data-copy-place>复制地点和坐标</button>' +
     '<button class="plain" type="button" data-checkin aria-pressed="' + checked.has(id) + '">' +
     (checked.has(id) ? '已打卡 ✓' : '标记打卡') + '</button></div>' +
     '<p id="detail-status" class="detail-status" role="status">打卡保存在当前浏览器</p>' +
     (next ? '<div class="next-leg"><p>下一站 <strong>' + next.stop.name + '</strong></p>' +
-      external(amapWalk(next.id, id), '步行到下一站 ↗') + '</div>' : '');
+      external(amapWalk(next.id, mobileDevice ? undefined : id, mobileDevice), mobileDevice ? '从当前位置去下一站 ↗' : '步行到下一站 ↗') +
+      (place?.navigationLngLat && next.place?.navigationLngLat ? '<button type="button" class="plain" data-amap-preview>站内看高德路线</button>' : '') + '</div>' : '');
+  if (inAppBrowser) byId('detail').insertAdjacentHTML('afterbegin', '<p class="app-hint">若高德 App 未打开，请点右上角 ⋯ → 在浏览器打开，或使用网页版。</p>');
   for (const button of byId('timeline').querySelectorAll('[data-stop]')) {
     if (button.dataset.stop === id) button.setAttribute('aria-current', 'step');
     else button.removeAttribute('aria-current');
@@ -139,6 +145,9 @@ function showPhoto(index) {
   const photo = items[photoIndex];
   byId('gallery-title').textContent = trip.stops[selected].name + ' · ' + (photoIndex + 1) + '/' + items.length;
   byId('gallery').innerHTML = '<figure>' + photoMarkup(photo) + photoCredit(photo) + '</figure>';
+  byId('gallery-thumbs').innerHTML = items.length > 1 ? items.map((item, i) =>
+    '<button type="button" data-photo-index="' + i + '" aria-label="第 ' + (i + 1) + ' 张" aria-pressed="' + (i === photoIndex) + '">' +
+    photoMarkup(item, true) + '</button>').join('') : '';
   byId('gallery-controls').hidden = items.length < 2;
 }
 byId('photo-prev').addEventListener('click', () => showPhoto(photoIndex - 1));
@@ -203,6 +212,21 @@ document.addEventListener('click', async event => {
     const next = rows[rows.findIndex(row => row.id === selected) + 1];
     if (next) selectStop(next.id);
   }
+  if (target.dataset.photoIndex !== undefined) {
+    showPhoto(Number(target.dataset.photoIndex));
+    byId('gallery-thumbs').querySelector('[aria-pressed="true"]')?.focus();
+  }
+  if (target.hasAttribute('data-amap-preview')) {
+    const next = rows[rows.findIndex(row => row.id === selected) + 1];
+    if (next) {
+      const endpoint = id => placeFor(id).navigationLngLat.join(',') + ',' + trip.stops[id].name;
+      byId('amap-frame').src = 'https://www.amap.com/ssr/embed/dir?' + new URLSearchParams({
+        from: endpoint(selected), to: endpoint(next.id), type: 'walk', platform: 'pc',
+      });
+      byId('amap-preview-web').href = amapWalk(next.id, selected, false);
+      byId('amap-preview').showModal();
+    }
+  }
   if (target.hasAttribute('data-gallery')) {
     showPhoto(0);
     photoDialog.showModal();
@@ -216,7 +240,8 @@ document.addEventListener('click', async event => {
     catch { byId('detail-status').textContent = '打卡仅在此页保留'; }
   }
   if (target.hasAttribute('data-copy-place')) {
-    const name = trip.stops[selected].name;
+    const coordinates = placeFor(selected)?.navigationLngLat;
+    const name = trip.stops[selected].name + (coordinates ? ' · GCJ-02 ' + coordinates.join(',') : '');
     try {
       await navigator.clipboard.writeText(name);
       if (byId('detail-status')) byId('detail-status').textContent = '已复制 ' + name;
@@ -256,6 +281,31 @@ byId('info').addEventListener('click', () => byId('info-dialog').showModal());
 byId('print').addEventListener('click', () => {
   byId('info-dialog').close();
   window.print();
+});
+byId('amap-preview').addEventListener('close', () => byId('amap-frame').removeAttribute('src'));
+byId('locate').addEventListener('click', () => {
+  const status = byId('map-status');
+  status.hidden = false;
+  if (!navigator.geolocation) {
+    status.textContent = '当前浏览器无法获取位置。';
+    return;
+  }
+  status.textContent = '正在定位…';
+  byId('locate').disabled = true;
+  navigator.geolocation.getCurrentPosition(({ coords }) => {
+    byId('locate').disabled = false;
+    const { latitude, longitude, accuracy } = coords;
+    if (latitude < 39.993 || latitude > 40.028 || longitude < 116.361 || longitude > 116.413) {
+      status.textContent = '当前位置在本站地图范围外，可在高德中查看。';
+      return;
+    }
+    if (compact.matches) setDrawer('peek');
+    map?.showLocation(coords);
+    status.textContent = '定位精度约 ±' + Math.ceil(accuracy) + ' 米';
+  }, error => {
+    byId('locate').disabled = false;
+    status.textContent = error.code === 1 ? '未授权定位，地图和行程仍可使用。' : '暂时无法定位，请稍后再试。';
+  }, { timeout: 12000, maximumAge: 0 });
 });
 compact.addEventListener('change', () => {
   if (compact.matches) setDrawer(map ? 'peek' : 'list');
