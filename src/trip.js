@@ -1,5 +1,5 @@
 const trip = {
-  date: '日期待定',
+  date: '11月8日',
   meetingTime: '13:00',
   stops: {
     meeting: { name: '奥林匹克公园站 G 东北口', keyword: '奥林匹克公园地铁站G东北口', tag: '集合点', duration: '13:05 出发', detail: '15 号线 G 东北口。出站请核对 G 口标识。主线从林萃桥站 C1 东南口返程。' },

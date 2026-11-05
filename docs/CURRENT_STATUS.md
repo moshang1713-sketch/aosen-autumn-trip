@@ -8,7 +8,7 @@
 - [公开站点](https://moshang1713-sketch.github.io/aosen-autumn-trip/)已更新至地图升级版，公开首页及地理底图、实拍资源验证成功。[Pages 部署记录](https://github.com/moshang1713-sketch/aosen-autumn-trip/actions/runs/41928757708)。
 - 本地 JavaScript 语法检查、4 项地理数据测试和 Git 差异检查通过。Chrome 在同一组视口复测线上地图、双指缩放、抽屉、图集、行程切换、资源失败降级和分享。线上点击奥海西侧银杏的下一站，实际打开仰山西坡的高德步行页（HTTP 200）。微信和高德 App 唤起仍待真机验证。
 
-待确认活动日期、结束时刻、统一返程和生态廊道是否纳入备用路线。和合牌坊、中轴银杏、宣言广场和仰山西坡缺有明确使用权的同地点照片。园内开放以当天现场为准。[数据审计](MAP_DATA_AUDIT.md) · [技术决策](MAP_TECH_DECISION.md) · [照片来源](PHOTO_SOURCES.md)
+活动日期已定为 11月8日；待确认结束时刻、统一返程和生态廊道是否纳入备用路线。和合牌坊、中轴银杏、宣言广场和仰山西坡缺有明确使用权的同地点照片。园内开放以当天现场为准。[数据审计](MAP_DATA_AUDIT.md) · [技术决策](MAP_TECH_DECISION.md) · [照片来源](PHOTO_SOURCES.md)
 
 ## 照片与导航升级
 

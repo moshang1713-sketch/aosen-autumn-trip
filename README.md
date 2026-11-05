@@ -1,6 +1,6 @@
 # 奥森南园 · 秋日光影
 
-手机优先的秋游地图。集合为 **13:00，奥林匹克公园站 G 东北口**。活动日期、建议结束时间和统一返程等待组织者确认。[公开站点](https://moshang1713-sketch.github.io/aosen-autumn-trip/)
+手机优先的秋游地图。活动日期为 **11月8日**，集合为 **13:00，奥林匹克公园站 G 东北口**。建议结束时间和统一返程等待组织者确认。[公开站点](https://moshang1713-sketch.github.io/aosen-autumn-trip/)
 
 ## 本地运行
 
@@ -11,7 +11,7 @@
 - `src/walks.js` 保存逐段步行快照。修改站序时若缺少新路段，前端会标明缺口。现场导航可通过高德步行 URI 使用。
 - `assets/maps/aosen-osm.geojson` 为区域地理底图。数据署名 © OpenStreetMap contributors，采用 [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)。地图不调用外部瓦片。
 - `src/photos.js` 及 `assets/photos/` 管理照片和缩略图，来源与权限见 [照片清单](docs/PHOTO_SOURCES.md)。
-- 打卡保存在本机浏览器，方案切换保留。日期和建议安排由组织者确认。
+- 打卡保存在本机浏览器，方案切换保留。活动日期已定为 11月8日，建议安排由组织者确认。
 
 ## 开源与部署
 
