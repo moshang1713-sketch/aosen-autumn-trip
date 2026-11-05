@@ -32,6 +32,7 @@ test('coordinate axes and provider boundary', () => {
     assert.ok(lng > 116.36 && lng < 116.40 && lat > 39.99 && lat < 40.03, id);
     const original = place.coordinateSystem === 'WGS84' ? place.mapLngLat : place.navigationLngLat;
     assert.ok(distance(original, place.lngLat) < .01, id);
+    if (!place.navigationLngLat) continue;
     const offset = distance(place.navigationLngLat, place.mapLngLat);
     assert.ok(offset > 500 && offset < 650, id + ' local GCJ-02 offset');
   }
@@ -41,8 +42,8 @@ test('coordinate axes and provider boundary', () => {
 test('each plan has one G exit, a distinct return and a route for each adjacent pair', () => {
   assert.equal(trip.meetingTime, '13:00');
   assert.equal(trip.plans.comfy.rows.at(-1)[0], '15:22–15:53');
-  assert.equal(places.sculpture, undefined);
-  assert.equal(places.cascade, undefined);
+  assert.equal(places.sculpture.locationType, 'area');
+  assert.equal(places.cascade.locationType, 'area');
   for (const [id, plan] of Object.entries(trip.plans)) {
     const stops = plan.rows.map(row => row[1]);
     assert.equal(stops[0], 'meeting');

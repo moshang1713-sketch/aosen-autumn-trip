@@ -19,3 +19,7 @@
 - lake-ginkgo-4.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_4.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - lake-ginkgo-5.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_5.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - lake-ginkgo-6.webp，2023-10-01，星外之神，等比缩放并转码为 WebP。 [原图](https://commons.wikimedia.org/wiki/File:Ginkgo_forest_in_Beijing_Olympic_Forest_Park_6.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+## 英语协会秋游版
+
+英语协会攻略提供 9 张照片或参考拼图，用户指示直接上传。保留图内水印，作者、拍摄日期或确切拍摄点未知时按攻略参考展示。素材为等比 WebP 与缩略图。

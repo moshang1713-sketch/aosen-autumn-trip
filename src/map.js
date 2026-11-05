@@ -66,15 +66,19 @@ function createRouteMap(onSelect, obscuredHeight) {
     });
   }
 
-  function render(rows, segments) {
+  const paths = [];
+  function render(rows) {
     route.clearLayers();
     markers.clear();
+    paths.length = 0;
     routeBounds = leaflet.latLngBounds([]);
-    for (const segment of segments) {
+    for (const [index, { id, segment }] of rows.entries()) {
+      if (!segment) continue;
       const line = segment.coordinates.map(latLng);
       for (const point of line) routeBounds.extend(point);
       leaflet.polyline(line, { color: '#fffcf0', weight: 8, interactive: false }).addTo(route);
-      leaflet.polyline(line, { color: '#aa501e', weight: 4.5, interactive: false, className: 'walk-segment' }).addTo(route);
+      const layer = leaflet.polyline(line, { interactive: false, className: 'walk-segment' }).addTo(route);
+      paths.push({ layer, from: rows[index - 1].id, to: id });
     }
     for (const { id, number, stop, place } of rows) {
       if (!place?.mapLngLat) continue;
@@ -96,6 +100,17 @@ function createRouteMap(onSelect, obscuredHeight) {
       routeBounds.extend(position);
     }
     reset();
+  }
+
+  function updateProgress(checked) {
+    for (const [id, marker] of markers) {
+      marker.getElement().dataset.checked = String(checked.has(id));
+    }
+    for (const { layer, from, to } of paths) {
+      const done = checked.has(from) && checked.has(to);
+      layer.setStyle({ color: done ? '#23704e' : '#ad493d', weight: done ? 5.5 : 4.5, dashArray: done ? null : '7 7' });
+      layer.getElement()?.classList.toggle('walk-complete', done);
+    }
   }
 
   function select(id, center) {
@@ -129,5 +144,5 @@ function createRouteMap(onSelect, obscuredHeight) {
       .bindTooltip('我的位置 · 约 ±' + Math.ceil(accuracy) + ' 米').addTo(map);
     map.setView(point, Math.max(map.getZoom(), 16), { animate: false });
   }
-  return { render, select, reset, showLocation };
+  return { render, select, reset, showLocation, updateProgress };
 }

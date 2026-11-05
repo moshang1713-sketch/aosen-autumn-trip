@@ -38,7 +38,7 @@ function photoMarkup(photo, thumb = false) {
 
 function photoCredit(photo) {
   return '<figcaption>' + photo.title + ' · ' + (photo.date ? '拍摄 ' + photo.date + ' · ' : '拍摄日期未核实 · ') + photo.author + ' · ' +
-    external(photo.licenseUrl, photo.license, 'source') + ' · ' + external(photo.sourceUrl, '原图', 'source') + '</figcaption>';
+    (photo.sourceUrl ? external(photo.licenseUrl, photo.license, 'source') + ' · ' + external(photo.sourceUrl, '原图', 'source') : '攻略参考') + '</figcaption>';
 }
 
 document.addEventListener('error', event => {
@@ -84,13 +84,31 @@ function renderPlan() {
     return '<li><button type="button" class="stop-row" data-stop="' + id + '">' +
       (photo ? photoMarkup(photo, true) : '<span class="row-ordinal" aria-hidden="true">' + number + '</span>') +
       '<span class="row-text"><span class="row-time">' + number + ' / ' + time + '</span><strong>' + stop.name +
-      '</strong><span class="row-walk">' + stop.duration + (walk ? ' · ' + walk : '') + '</span></span><span aria-hidden="true">›</span></button>' +
+      '</strong><span class="stop-check"></span><span class="row-walk">' + stop.duration + (walk ? ' · ' + walk : '') + '</span></span><span aria-hidden="true">›</span></button>' +
       '<span class="print-link">' + external(amapLink(id), '高德查看') + '</span></li>';
   }).join('');
   if (!rows.some(row => row.id === selected)) selected = 'meeting';
   if (compact.matches) setDrawer(map ? 'peek' : 'list');
-  map?.render(rows, segments);
+  map?.render(rows);
+  updateFootprints();
   selectStop(selected, false);
+}
+
+function updateFootprints() {
+  map?.updateProgress(checked);
+  const planCount = rows.filter(row => checked.has(row.id)).length;
+  byId('checkin-count').textContent = planCount + ' / ' + rows.length + ' 已打卡';
+  for (const button of byId('timeline').querySelectorAll('[data-stop]')) {
+    const done = checked.has(button.dataset.stop);
+    button.dataset.checked = String(done);
+    button.querySelector('.stop-check').textContent = done ? '✓ 已打卡' : '○ 未打卡';
+  }
+  byId('footprint-list').replaceChildren(...Array.from(checked, id => {
+    const item = document.createElement('li');
+    item.textContent = trip.stops[id].name;
+    return item;
+  }));
+  byId('footprint-empty').hidden = checked.size > 0;
 }
 
 function selectStop(id, center = true) {
@@ -236,6 +254,7 @@ document.addEventListener('click', async event => {
     else checked.add(selected);
     target.setAttribute('aria-pressed', String(checked.has(selected)));
     target.textContent = checked.has(selected) ? '已打卡 ✓' : '标记打卡';
+    updateFootprints();
     try { localStorage.setItem(checkinKey, JSON.stringify([...checked])); }
     catch { byId('detail-status').textContent = '打卡仅在此页保留'; }
   }

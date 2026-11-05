@@ -22,7 +22,7 @@
 </head>
 <body>
   <header class="masthead">
-    <a class="brand" href="./"><img src="./assets/leaf.svg" width="36" height="36" alt=""><span><small>北京 · 秋日光影</small><strong>奥森南园秋游地图</strong></span></a>
+    <a class="brand" href="./"><img src="./assets/english-club.svg" width="36" height="36" alt=""><span><small>英语协会 · Autumn Walk</small><strong>奥森南园秋游地图</strong></span></a>
     <div class="top-actions"><button id="info" class="plain" type="button">出行说明</button><button id="share" class="button" type="button">分享 ↗</button></div>
   </header>
   <main class="workspace">
@@ -37,7 +37,7 @@
         <button type="button" id="locate">定位到我</button><button type="button" data-meeting>集合点</button><button type="button" id="next">下一站</button><button type="button" id="overview">全程</button>
         <a id="map-amap" href="https://uri.amap.com/search?keyword=奥林匹克公园地铁站G东北口&amp;city=北京&amp;callnative=1" target="_blank" rel="noopener noreferrer">在高德打开 ↗</a>
       </div>
-      <div class="map-foot"><span>橙线 · 步行算路参考</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></div>
+      <div class="map-foot"><span><b class="trail-done">✓ 已打卡</b> · <b class="trail-todo">○ 未打卡</b> · 线为打卡进度</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></div>
     </section>
     <aside id="drawer" class="drawer" data-state="peek" aria-label="景点信息与行程">
       <button id="drawer-handle" class="drawer-handle" type="button" aria-label="切换抽屉高度"><span></span></button>
@@ -49,7 +49,7 @@
         <div id="detail"></div>
         <section id="schedule" class="schedule" aria-labelledby="schedule-title">
           <div class="section-heading"><div><p class="kicker">沿途安排</p><h3 id="schedule-title">行程时间轴</h3></div><span id="route-count"></span></div>
-          <p id="plan-note"></p><ol id="timeline"></ol>
+          <p id="plan-note"></p><details class="footprints"><summary>一路足迹 <span id="checkin-count" aria-live="polite"></span></summary><p>按打卡顺序记录在本机。相邻两站都打卡后，对应的已核实路线变绿。</p><p id="footprint-empty">还没有足迹。到达景点后点「标记打卡」。</p><ol id="footprint-list"></ol></details><ol id="timeline"></ol>
         </section>
       </div>
       <div class="drawer-tabs" role="group" aria-label="抽屉内容"><button type="button" data-drawer="detail">景点详情</button><button type="button" data-drawer="list">完整行程</button></div>

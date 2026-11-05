@@ -20,3 +20,70 @@ const photos = {
     { file: 'return-station.webp', title: '森林公园南门站外景', author: 'Weixi Zeng', license: 'CC BY-SA 3.0', licenseUrl: creativeCommons + 'by-sa/3.0/', sourceUrl: commons + encodeURIComponent('森林公园地铁站 Olympic Forest Metro Sta. - panoramio.jpg') },
   ],
 };
+
+const guidePhotos = {
+  "cascade": [
+    {
+      "file": "guide-cascade-1.webp",
+      "title": "叠水花台水景",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "arch": [
+    {
+      "file": "guide-arch-2.webp",
+      "title": "牌坊外观",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "lincui": [
+    {
+      "file": "guide-lincui-3.webp",
+      "title": "林萃桥站外景参考",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "corridor": [
+    {
+      "file": "guide-corridor-4.webp",
+      "title": "生态廊道周边参考",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "sculpture": [
+    {
+      "file": "guide-sculpture-5.webp",
+      "title": "十境雕塑一站的秋色参考拼图",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "xishi": [
+    {
+      "file": "guide-xishi-6.webp",
+      "title": "夕拾台一站的秋景参考拼图",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "square": [
+    {
+      "file": "guide-square-7.webp",
+      "title": "宣言广场一站的奥林匹克塔与银杏参考",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ],
+  "summit": [
+    {
+      "file": "guide-summit-8.webp",
+      "title": "仰山一站的奥林匹克塔远景参考",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    },
+    {
+      "file": "guide-summit-9.webp",
+      "title": "仰山一站的秋色参考拼图",
+      "author": "活动攻略供图 · 原署名以图内为准"
+    }
+  ]
+};
+for (const [id, images] of Object.entries(guidePhotos)) {
+  photos[id] = [...(photos[id] ?? []), ...images];
+}

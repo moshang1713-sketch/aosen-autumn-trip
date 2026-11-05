@@ -227,5 +227,31 @@ const places = {
       40.0218044
     ],
     "verifiedAt": "2026-11-05"
+  },
+  "sculpture": {
+    "lngLat": [
+      116.3775,
+      40.0159
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "area",
+    "confidence": "高德截图配准 · 约略位置",
+    "mapLngLat": [
+      116.3775,
+      40.0159
+    ]
+  },
+  "cascade": {
+    "lngLat": [
+      116.3763,
+      40.0165
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "area",
+    "confidence": "高德截图配准 · 约略位置",
+    "mapLngLat": [
+      116.3763,
+      40.0165
+    ]
   }
 };

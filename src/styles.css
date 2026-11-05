@@ -186,3 +186,17 @@ dialog h2 { font-size: 1.2rem; }
 #photo-dialog .gallery-thumbs img { object-fit: cover; }
 .app-hint { padding: 6px 8px; margin-bottom: 5px; background: #fbefc9; font-size: .77rem; }
 @media (max-width: 390px) { .map-tools button, .map-tools a { padding-inline: 5px; } }
+
+:root { --check-green: #246748; --check-red: #a3362f; }
+.map-pin[data-checked="true"] span { background: var(--check-green); }
+.map-pin[data-checked="false"] span { background: var(--check-red); }
+.trail-done, [data-checked="true"] .stop-check { color: var(--check-green); }
+.trail-todo, .stop-check { color: var(--check-red); }
+.stop-check { font-size: .72rem; font-weight: 750; }
+[data-checkin] { border-radius: 9px; background: #fae9e2; color: var(--check-red); text-decoration: none; }
+[data-checkin][aria-pressed="true"] { background: #e1efdf; color: var(--check-green); }
+.footprints { margin-top: 10px; border: 1px solid #e6d8ac; border-radius: 10px; padding: 0 10px; background: #fbf1d5; font-size: .8rem; }
+.footprints summary { min-height: 44px; padding-block: 12px; font-weight: 750; cursor: pointer; }
+.footprints summary span { float: right; color: var(--check-green); }
+.footprints p { margin-bottom: 8px; color: var(--muted); }
+.footprints ol { margin: 6px 0 10px; padding-left: 22px; }
