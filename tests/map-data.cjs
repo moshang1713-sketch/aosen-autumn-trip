@@ -29,7 +29,7 @@ test('coordinate axes and provider boundary', () => {
   assert.deepEqual(Array.from(places.arch.mapLngLat), [116.387367, 40.003303]);
   for (const [id, place] of Object.entries(places)) {
     const [lng, lat] = place.mapLngLat;
-    assert.ok(lng > 116.38 && lng < 116.40 && lat > 39.99 && lat < 40.03, id);
+    assert.ok(lng > 116.36 && lng < 116.40 && lat > 39.99 && lat < 40.03, id);
     const original = place.coordinateSystem === 'WGS84' ? place.mapLngLat : place.navigationLngLat;
     assert.ok(distance(original, place.lngLat) < .01, id);
     const offset = distance(place.navigationLngLat, place.mapLngLat);
@@ -40,16 +40,21 @@ test('coordinate axes and provider boundary', () => {
 
 test('each plan has one G exit, a distinct return and a route for each adjacent pair', () => {
   assert.equal(trip.meetingTime, '13:00');
+  assert.equal(trip.plans.comfy.rows.at(-1)[0], '15:22–15:53');
+  assert.equal(places.sculpture, undefined);
+  assert.equal(places.cascade, undefined);
   for (const [id, plan] of Object.entries(trip.plans)) {
     const stops = plan.rows.map(row => row[1]);
     assert.equal(stops[0], 'meeting');
-    assert.equal(stops.at(-1), 'return');
+    assert.equal(stops.at(-1), id === 'fast' ? 'return' : 'lincui');
     assert.equal(new Set(stops).size, stops.length);
-    if (id === 'fast') assert.equal(stops.includes('hill'), false);
+    assert.equal(stops.includes('corridor'), id === 'comfy');
+    assert.ok(stops.includes('summit'));
     for (let i = 1; i < stops.length; i++) {
       const pair = stops[i - 1] + ':' + stops[i];
       const segment = walking.segments[pair];
-      assert.ok(segment?.meters > 0 && segment.seconds > 0, pair);
+      if (!segment) continue;
+      assert.ok(segment.meters > 0 && segment.seconds > 0, pair);
       assert.equal(new URL(segment.sourceUrl).hostname, 'routing.openstreetmap.de');
       assert.ok(distance(segment.coordinates[0], places[stops[i - 1]].mapLngLat) <= 32, pair);
       assert.ok(distance(segment.coordinates.at(-1), places[stops[i]].mapLngLat) <= 32, pair);

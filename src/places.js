@@ -1,4 +1,4 @@
-// Source coordinates and provider-specific projections in [longitude, latitude] order.
+// Source and provider coordinates in [longitude, latitude] order.
 const places = {
   "meeting": {
     "lngLat": [
@@ -149,6 +149,82 @@ const places = {
     "navigationLngLat": [
       116.3930632,
       40.0104449
+    ],
+    "verifiedAt": "2026-11-05"
+  },
+  "xishi": {
+    "lngLat": [
+      116.38347,
+      40.0168001
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "exact",
+    "confidence": "OSM 夕拾台景观点",
+    "sourceUrl": "https://www.openstreetmap.org/node/13305744788",
+    "mapLngLat": [
+      116.38347,
+      40.0168001
+    ],
+    "navigationLngLat": [
+      116.3897195,
+      40.0182009
+    ],
+    "verifiedAt": "2026-11-05"
+  },
+  "summit": {
+    "lngLat": [
+      116.3861579,
+      40.0175973
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "area",
+    "confidence": "OSM 仰山山顶参考点",
+    "sourceUrl": "https://www.openstreetmap.org/node/4367214507",
+    "mapLngLat": [
+      116.3861579,
+      40.0175973
+    ],
+    "navigationLngLat": [
+      116.3924098,
+      40.0190001
+    ],
+    "verifiedAt": "2026-11-05"
+  },
+  "corridor": {
+    "lngLat": [
+      116.3856753,
+      40.0213474
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "area",
+    "confidence": "生态廊道桥段参考点 · 以现场指引为准",
+    "sourceUrl": "https://www.openstreetmap.org/way/173491953",
+    "mapLngLat": [
+      116.3856753,
+      40.0213474
+    ],
+    "navigationLngLat": [
+      116.3919273,
+      40.0227501
+    ],
+    "verifiedAt": "2026-11-05"
+  },
+  "lincui": {
+    "lngLat": [
+      116.3677876,
+      40.0204201
+    ],
+    "coordinateSystem": "WGS84",
+    "locationType": "exact",
+    "confidence": "OSM 林萃桥站 C1 出入口",
+    "sourceUrl": "https://www.openstreetmap.org/node/7603978079",
+    "mapLngLat": [
+      116.3677876,
+      40.0204201
+    ],
+    "navigationLngLat": [
+      116.3740178,
+      40.0218044
     ],
     "verifiedAt": "2026-11-05"
   }
